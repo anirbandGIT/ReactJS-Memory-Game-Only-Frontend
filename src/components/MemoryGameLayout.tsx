@@ -25,6 +25,7 @@ class MemoryGameLayout extends React.Component<
   private moveErrors = 0;
   public errorMessage: string = "";
   public timerInterval: any;
+  public disabledClickOnCard: boolean = false;
 
   constructor(props: any) {
     super(props);
@@ -87,13 +88,6 @@ class MemoryGameLayout extends React.Component<
 
   private checkIfCardsMatch = (): void => {
     if (this.state.selectedCardKeyIndex.length === 2) {
-      let finalCount =
-        this.difficulty === "hard" ? 16 : this.difficulty === "medium" ? 12 : 8;
-      if (this.solvedCards.length === finalCount / 2) {
-        this.setState({ gameFinished: true });
-        clearInterval(this.timerInterval);
-      }
-
       if (
         this.state.cards[this.state.selectedCardKeyIndex[0]].key ===
         this.state.cards[this.state.selectedCardKeyIndex[1]].key
@@ -110,9 +104,18 @@ class MemoryGameLayout extends React.Component<
         // }));
       } else {
         this.moveErrors += 1;
+        this.disabledClickOnCard = true;
         setTimeout(() => {
           this.setState({ selectedCardKeyIndex: [] });
+          this.disabledClickOnCard = false;
         }, 3000);
+      }
+
+      let finalCount =
+        this.difficulty === "hard" ? 16 : this.difficulty === "medium" ? 12 : 8;
+      if (this.solvedCards.length === finalCount / 2) {
+        this.setState({ gameFinished: true });
+        clearInterval(this.timerInterval);
       }
     }
   };
@@ -164,7 +167,8 @@ class MemoryGameLayout extends React.Component<
                     key={cardIndex}
                     disabled={
                       this.state.selectedCardKeyIndex.includes(cardIndex) ||
-                      this.solvedCards.includes(card.key)
+                      this.solvedCards.includes(card.key) ||
+                      this.disabledClickOnCard
                     }
                     onClick={(cardClickEvent) =>
                       this.handleCardClick(card.key, cardIndex)
