@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import StartLayout from "./components/StartLayout";
+import MemoryGameLayout from "./components/MemoryGameLayout";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppState {}
+
+class App extends React.Component<any, IAppState> {
+  render() {
+    return (
+      <Router>
+        <div className="App">
+          <h1>MEMORY GAME</h1>
+          <Switch>
+            <Route exact path="/start" component={StartLayout} />
+            <Route exact path="/" render={() => <Redirect to="/start" />} />
+            <Route path="/game" component={MemoryGameLayout} />
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;
